@@ -37,7 +37,7 @@ public class Table {
 		return records;
 	}
 
-	protected void toFile(String filename){
+	protected void toFile(){
 		
 		try {
 			PrintWriter writer = new PrintWriter(filename, "UTF-8");
@@ -81,6 +81,10 @@ public class Table {
 						System.err.println("The queried file is empty.");
 					}
 
+					while(fileScanner.hasNextLine()) {
+						records.add(new Record(fileScanner.nextLine()));
+					}
+
 					fileScanner.close();
 
 				} catch (Exception e) {
@@ -93,5 +97,29 @@ public class Table {
 		records.add(r);
 	}
 
+	protected void showRecordById(int id) {
+		String[] temp = records.get(id).parseRecord();
+		for (int i = 0; i < temp.length; i++) {
+			System.out.println("-> " + attributes.get(i).name + ": " + temp[i]);
+		}
+	}
+
+	protected void deleteRecordById(int id) {
+		records.remove(id);
+	}
+
+	protected Attribute getAttributeByName(String attri){
+
+		for (int i = 0; i < attributes.size(); i++) {
+			if(attributes[i].name.equals(attri)) {
+				return attributes[i];
+			}
+		}
+		return null;
+	}
+
+	protected ArrayList<Integer> searchRecord() {
+		return null;
+	}
 
 }

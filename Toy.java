@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Toy {
 	public static void main(String [] args) {
@@ -22,7 +23,7 @@ public class Toy {
 					tempTable.addAttribute(new Attribute(attributeName, type));
 					System.out.println("More Attribute? (y/n): ");
 					if(scan.next().charAt(0) == 'n') {
-						tempTable.toFile(filename);
+						tempTable.toFile();
 						stop = true;
 					}
 				}
@@ -71,40 +72,81 @@ public class Toy {
 				ArrayList<Attribute> aArray = tempTable.getAttributes();
 				Scanner in = new Scanner(System.in);
 				Record r = new Record();
+
 				for(Attribute a : aArray) {
 					System.out.print(a.getName() + ": ");
 
+					String input = in.nextLine();
+
 					if(a.type == 1) {
-						int temp = in.nextInt();
-						r.addValue(String.valueOf(temp));
-					}
-
-					if(a.type == 2) {
-						double temp = in.nextDouble();
-						r.addValue(String.valueOf(temp));
-					}
-
-					if(a.type == 3) {
-						char c = in.next().charAt(0);
-						if(c != 'T' && c != 'F') {
-							System.err.println("Only 'T' or 'F' allowed.");
-							return;
+						if(Pattern.matches("-*[0-9]+", input.trim())) {
+							r.addValue(String.valueOf(input.trim()));
 						} else {
-							r.addValue(String.valueOf(c));
+							System.out.println("Invalid input.");
+							return;
 						}
+					} else if(a.type == 2) {
+						if(Pattern.matches("[0-9]+\\.*[0-9]+", input.trim())) {
+							r.addValue(String.valueOf(input.trim()));
+						}else {
+							System.out.println("Invalid input.");
+							return;
+						}
+					} else if(a.type == 3) {
+						if(input.trim().equals("T") || input.trim().equals("F")) {
+							r.addValue(String.valueOf(input.trim()));
+						} else {
+							System.out.println("Invalid input.");
+							return;
+						}
+					} else {
+						r.addValue(String.valueOf(input.trim()));
 					}
-
-					if(a.type == 4) {
-						String temp = in.nextLine();
-						r.addValue(temp);
-					}
-				}
+				 }
 
 				in.close();
 
 				tempTable.insertRecord(r);
-				tempTable.toFile(filename);
+				tempTable.toFile();
 
+			}
+
+			if(args[0].equals("display")) {
+				int rid = Integer.valueOf(args[1]);
+				String filename = args[2];
+
+				Table tempTable = new Table(filename);
+				tempTable.toTable();
+
+				if(tempTable.getNumOfRecords() <= rid) {
+					System.out.println("queried rid out of range.");
+					return;
+				}
+
+				tempTable.showRecordById(rid);
+
+			}
+
+			if(args[0].equals("delete")) {
+				int rid = Integer.valueOf(args[1]);
+				String filename = args[2];
+
+				Table tempTable = new Table(filename);
+				tempTable.toTable();
+
+				tempTable.deleteRecordById(rid);
+				tempTable.toFile();
+			}
+
+			if(args[0].equals("search")) {
+				String condition = args[1];
+				String filename = args[2];
+
+				String[] splitCondition = condition.trim().split("=");
+				String attri = splitCondition[0].trim();
+				String value = splitCondition[1].trim();
+				
+				//todo
 			}
 		}
 		
