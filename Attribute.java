@@ -1,6 +1,6 @@
 public class Attribute {
-	String name;
-	int type;
+	private String name;
+	private int type;
 
 	public Attribute(String name, int type) {
 		this.name = name;
