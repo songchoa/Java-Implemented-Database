@@ -78,21 +78,21 @@ public class Toy {
 
 					String input = in.nextLine();
 
-					if(a.type == 1) {
+					if(a.getType() == 1) {
 						if(Pattern.matches("-*[0-9]+", input.trim())) {
 							r.addValue(String.valueOf(input.trim()));
 						} else {
 							System.out.println("Invalid input.");
 							return;
 						}
-					} else if(a.type == 2) {
+					} else if(a.getType() == 2) {
 						if(Pattern.matches("[0-9]+\\.*[0-9]+", input.trim())) {
 							r.addValue(String.valueOf(input.trim()));
 						}else {
 							System.out.println("Invalid input.");
 							return;
 						}
-					} else if(a.type == 3) {
+					} else if(a.getType() == 3) {
 						if(input.trim().equals("T") || input.trim().equals("F")) {
 							r.addValue(String.valueOf(input.trim()));
 						} else {
@@ -141,12 +141,13 @@ public class Toy {
 			if(args[0].equals("search")) {
 				String condition = args[1];
 				String filename = args[2];
-
+				Table tempTable = new Table(filename);
+				tempTable.toTable();
 				String[] splitCondition = condition.trim().split("=");
 				String attri = splitCondition[0].trim();
 				String value = splitCondition[1].trim();
-				
-				//todo
+				tempTable.showRecord(attri, value);
+
 			}
 		}
 		
