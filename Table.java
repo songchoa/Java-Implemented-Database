@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.File;
 import java.util.Scanner;
+import java.lang.Math;
+import java.util.regex.Pattern;
+import java.lang.String;
 
 
 public class Table {
@@ -43,7 +46,7 @@ public class Table {
 			PrintWriter writer = new PrintWriter(filename, "UTF-8");
 			writer.print("[" + attributes.size() + "]");
 			for (Attribute a : attributes) {
-				writer.print("[" + a.name + ":" + a.type +"]");
+				writer.print("[" + a.getName().trim() + ":" + a.getType() +"]");
 			}
 
 			writer.print("[" + records.size() + "]\n");
@@ -100,7 +103,7 @@ public class Table {
 	protected void showRecordById(int id) {
 		String[] temp = records.get(id).parseRecord();
 		for (int i = 0; i < temp.length; i++) {
-			System.out.println("-> " + attributes.get(i).name + ": " + temp[i]);
+			System.out.println("-> " + attributes.get(i).getName().trim() + ": " + temp[i]);
 		}
 	}
 
@@ -111,15 +114,74 @@ public class Table {
 	protected Attribute getAttributeByName(String attri){
 
 		for (int i = 0; i < attributes.size(); i++) {
-			if(attributes[i].name.equals(attri)) {
-				return attributes[i];
+			if(attributes.get(i).getName().trim().toUpperCase().equals(attri.toUpperCase())) {
+				return attributes.get(i);
 			}
 		}
 		return null;
 	}
 
-	protected ArrayList<Integer> searchRecord() {
-		return null;
+	protected int getAttributeIndex(String attri){
+		int index = 0;
+		for (int i = 0; i < attributes.size(); i++) {
+			if(attributes.get(i).getName().trim().toUpperCase().equals(attri.toUpperCase())) {
+				index = i;
+				break;
+			}
+		}
+
+		return index;
+	}
+
+	protected void showRecord(String attri, String value){
+		Attribute temp = getAttributeByName(attri);
+		int numericValue = 0;
+
+		int attriIndex = getAttributeIndex(attri);
+		boolean intValue = false;
+
+		if(temp.getType() == 1 || temp.getType() == 2) {
+			
+			if(Pattern.matches("-*[0-9]+", value.trim())) {
+				numericValue = Integer.valueOf(value);
+				intValue = true;
+			} else {
+				double num = Double.valueOf(value);
+				numericValue = (int)num;
+				intValue = false;
+			}
+
+			for (int i = 0; i < records.size(); i++){
+				String[] rStrArr = records.get(i).parseRecord();
+			
+				if(temp.getType() == 1) {
+					if(Integer.valueOf(rStrArr[attriIndex]) == numericValue) {
+						System.out.println("Record " + i);
+						showRecordById(i);
+					}
+
+				} else {
+						if(Math.floor(Double.valueOf(rStrArr[attriIndex])) == numericValue) {
+							System.out.println("Record " + i);
+							showRecordById(i);
+						}
+					}
+				
+				}
+			} else {
+
+				for (int i = 0; i < records.size(); i++){
+					String[] rStrArr = records.get(i).parseRecord();
+					if(rStrArr[attriIndex].equals(value)){
+						System.out.println("Record " + i);
+						showRecordById(i);
+					}
+				
+				}
+			}
+		
+
+		System.out.println("complete.");
 	}
 
 }
