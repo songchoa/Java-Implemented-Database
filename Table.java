@@ -63,7 +63,7 @@ public class Table {
 		
 	}
 
-	protected void toTable(){
+	protected boolean toTable(){
 				
 				try{
 					File f = new File(filename);
@@ -82,6 +82,7 @@ public class Table {
 
 					} else {
 						System.err.println("The queried file is empty.");
+						return false;
 					}
 
 					while(fileScanner.hasNextLine()) {
@@ -92,7 +93,10 @@ public class Table {
 
 				} catch (Exception e) {
 					System.err.println("The queried file does not exist.");
+					return false;
 				}
+
+				return true;
 			}	
 
 	protected void insertRecord(Record r){

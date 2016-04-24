@@ -1,3 +1,4 @@
 *.class
 *.tb
 test.java
+.DS_Store

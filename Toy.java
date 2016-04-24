@@ -1,16 +1,25 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.lang.String;
 
 public class Toy {
 	public static void main(String [] args) {
 		
-		if(args.length > 0) {
+		if(args.length >= 2) {
 			
-			if(args[0].equals("create")) {
+			if(args[0].toUpperCase().equals("CREATE")) {
 				
 				Scanner scan = new Scanner(System.in);
-				String filename = args[1];
+				String filename = null;
+				if(args[1].substring(args[1].length()-3).equals(".tb")) {
+					filename = args[1];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
+
 				Table tempTable = new Table(filename);
 
 				boolean stop = false;
@@ -31,13 +40,22 @@ public class Toy {
 				scan.close();
 			}
 
-			if(args[0].equals("header")) {
+			if(args[0].toUpperCase().equals("HEADER")) {
 				
-				String filename = args[1];
+				String filename = null;
+				if(args[1].substring(args[1].length()-3).equals(".tb")) {
+					filename = args[1];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
 				
 				Table tempTable = new Table(filename);
 
-				tempTable.toTable();
+				boolean totable = tempTable.toTable();
+
+				if(totable == false ) { return; }
 
 				ArrayList<Attribute> aArray = tempTable.getAttributes();
 
@@ -65,10 +83,20 @@ public class Toy {
 
 			}
 
-			if(args[0].equals("insert")) {
-				String filename = args[1];
+
+
+			if(args[0].toUpperCase().equals("INSERT")) {
+				String filename = null;
+				if(args[1].substring(args[1].length()-3).equals(".tb")) {
+					filename = args[1];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
 				Table tempTable = new Table(filename);
-				tempTable.toTable();
+				boolean totable = tempTable.toTable();
+				if(totable == false) {return;}
 				ArrayList<Attribute> aArray = tempTable.getAttributes();
 				Scanner in = new Scanner(System.in);
 				Record r = new Record();
@@ -111,12 +139,21 @@ public class Toy {
 
 			}
 
-			if(args[0].equals("display")) {
+			if(args[0].toUpperCase().equals("DISPLAY")) {
+				if(args.length < 3) {System.out.println("Not enough arguments");return;}
 				int rid = Integer.valueOf(args[1]);
-				String filename = args[2];
+				String filename = null;
+				if(args[2].substring(args[2].length()-3).equals(".tb")) {
+					filename = args[2];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
 
 				Table tempTable = new Table(filename);
-				tempTable.toTable();
+				boolean totable = tempTable.toTable();
+				if(totable == false) {return;}
 
 				if(tempTable.getNumOfRecords() <= rid) {
 					System.out.println("queried rid out of range.");
@@ -127,31 +164,48 @@ public class Toy {
 
 			}
 
-			if(args[0].equals("delete")) {
+			if(args[0].toUpperCase().equals("DELETE")) {
+				if(args.length < 3) {System.out.println("Not enough arguments");return;}
+
 				int rid = Integer.valueOf(args[1]);
-				String filename = args[2];
+				String filename = null;
+				if(args[2].substring(args[2].length()-3).equals(".tb")) {
+					filename = args[2];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
 
 				Table tempTable = new Table(filename);
-				tempTable.toTable();
-
+				boolean totable = tempTable.toTable();
+				if(totable == false) {return;}
 				tempTable.deleteRecordById(rid);
 				tempTable.toFile();
 			}
 
-			if(args[0].equals("search")) {
+			if(args[0].toUpperCase().equals("SEARCH")) {
+				if(args.length < 3) {System.out.println("Not enough arguments");return;}
 				String condition = args[1];
-				String filename = args[2];
+				String filename = null;
+				if(args[2].substring(args[2].length()-3).equals(".tb")) {
+					filename = args[2];
+
+				} else {
+					System.out.println("Check your extension, it should be .tb");
+					return;
+				}
 				Table tempTable = new Table(filename);
-				tempTable.toTable();
+				boolean totable = tempTable.toTable();
+				if(totable == false) {return;}
 				String[] splitCondition = condition.trim().split("=");
 				String attri = splitCondition[0].trim();
 				String value = splitCondition[1].trim();
 				tempTable.showRecord(attri, value);
 
 			}
-		}
-		
-		
-	}
-	
+		} else {
+			System.out.println("Not enough arguments");
+		}				
+	}	
 }
